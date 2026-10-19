@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Relay</title>
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+    <script src="static/script.js" defer></script>
+</head>
+
+<body>
+    <div class="banner">Demo data is fictional. Do not enter real personal information.</div>
+    <div style="padding:8px 16px">
+        Company:
+        <select id="tenant" onchange="switchTenant()">
+            <option value="tenant_acme">Acme Cloud (customer: Maya)</option>
+            <option value="tenant_bank">Northbank (customer: Raj)</option>
+        </select>
+
+        <button onclick="resetDemo()">Reset demo</button>
+    </div>
+    <div class="wrap">
+
+        <div class="col">
+            <div class="card" style="flex:1;display:flex;flex-direction:column">
+                <h3>Chat</h3>
+                <div id="log" role="log" aria-live="polite"></div>
+                <div><input type="text" id="box" aria-label="Message" placeholder="Type a message..."
+                        onkeydown="if(event.key==='Enter')send()">
+                    <button id="sendBtn" onclick="send()">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <section class="card graph-card" aria-labelledby="graph-title">
+                <h3 id="graph-title">Live graph</h3>
+                <p class="graph-description">Updates after every reply.</p>
+
+                <div class="time-control">
+                    <label for="tt">Time travel</label>
+
+                    <input type="range" id="tt" name="timestamp" min="0" max="0" value="0" aria-describedby="ttLabel"
+                        oninput="refreshGraph()">
+
+                    <output id="ttLabel" for="tt">Now</output>
+                </div>
+
+                <div class="graph-options">
+                    <label class="checkbox-label" for="kb">
+                        <input type="checkbox" id="kb" name="show-knowledge" onchange="refreshGraph()">
+                        Show policy knowledge
+                    </label>
+
+                    <div class="graph-legend" aria-label="Graph node legend">
+                        <span class="legend-item legend-customer">Customer</span>
+                        <span class="legend-item legend-fact">Fact</span>
+                        <span class="legend-item legend-case-open">Case (open)</span>
+                        <span class="legend-item legend-case-resolved">Case (resolved)</span>
+                        <span class="legend-item legend-case-escalated">Case (escalated)</span>
+                        <span class="legend-item legend-agent">Agent</span>
+                        <span class="legend-item legend-policy">Policy</span>
+                    </div>
+                </div>
+
+                <div id="graph" class="graph-canvas" role="img"
+                    aria-label="Interactive graph of customer facts and support cases"></div>
+            </section>
+        </div>
+
+        <div class="col">
+            <div class="card" style="flex:1">
+                <h3>Evidence: graph queries behind the last reply</h3>
+                <div id="trace">Send a message to see them.</div>
+            </div>
+            <div class="card" style="flex:1">
+                <h3>Memory in the graph (facts with time)</h3>
+                <div id="facts"></div>
+            </div>
+            <div class="card" style="flex:1">
+                <h3>Case trail (agent handoffs in the graph)</h3>
+                <div id="cases"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
